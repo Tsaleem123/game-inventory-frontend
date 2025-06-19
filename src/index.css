@@ -1,0 +1,105 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #ffffff;
+  background-color: #242424;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+a {
+  font-weight: 500;
+  color: #ffffff;
+  text-decoration: none;
+}
+a:hover {
+  color: #ffffff;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;    
+  align-items: flex-start;    
+  text-align: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #ffffff;
+  text-align: center;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1D191D;
+  color: white;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+button:hover {
+  border-color: #646cff;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #ffffff !important;
+    background-color: #1D191D  !important;
+  }
+  a, h1, h2, h3, h4, h5, h6, button {
+    color: #ffffff !important;
+  }
+  button {
+    background-color: #1D191D  !important;
+  }
+}
+
+p, span, div, li, label, input, textarea, select {
+  color: #ffffff;
+}
+.MuiTypography-root {
+  color: white  !important;
+}
+
+.textFieldDark {
+  margin-bottom: 16px;          
+  background: #1D191D ;
+}
+.textFieldDark .MuiOutlinedInput-root input {
+  color: #fff;
+  text-align: center;
+}
+.textFieldDark .MuiOutlinedInput-root input::placeholder {
+  color: #fff;
+  opacity: 1;
+  text-align: center;
+}
+.textFieldDark .MuiOutlinedInput-root input:focus::placeholder {
+  opacity: 0;                   
+}
+
+.textFieldDark .MuiOutlinedInput-root fieldset {
+  border-color: #fff;
+}
+
+.paginationWhite .MuiPaginationItem-root {
+  color: #fff;                
+}
+.paginationWhite .MuiPaginationItem-root.Mui-selected {
+  background: #fff;            
+  color: #1D191D;                 
+}

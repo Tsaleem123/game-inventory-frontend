@@ -17,13 +17,13 @@ const Pager: React.FC<Props> = ({ page, pageCount, onChange }) => {
   if (pageCount <= 1) return null;
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+    <Box>
       <Pagination
         count={pageCount}
         page={page}
         onChange={onChange}
         variant="outlined"
-        className="paginationWhite" 
+        className="paginationWhite"
       />
     </Box>
   );

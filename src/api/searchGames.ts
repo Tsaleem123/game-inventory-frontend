@@ -1,13 +1,12 @@
 import axios from 'axios';
-
+import type { Game } from '../types/Game';
 // Define the shape of the expected response from the backend API
 export interface SearchResponse {
-  results: any[];                   // List of matching games
-  number_of_total_results: number; // Total count of results available
-  limit: number;                    // Max results per page (pageSize)
-  offset: number;                   // How many results were skipped
+  results: Game[]
+  number_of_total_results: number
+  limit: number
+  offset: number
 }
-
 /**
  * Sends a GET request to your .NET backend to search for games
  * using the Giant Bomb API (proxied through your backend).

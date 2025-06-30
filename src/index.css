@@ -1,7 +1,14 @@
+/* ===== universal box‐sizing ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* ========== Global Defaults ========== */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
   font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
   color: #ffffff;
   background-color: #242424;
   font-synthesis: none;
@@ -9,97 +16,128 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-a {
-  font-weight: 500;
-  color: #ffffff;
-  text-decoration: none;
-}
-a:hover {
-  color: #ffffff;
-}
 
+/* ========== Layout ========== */
 body {
   margin: 0;
   display: flex;
-  justify-content: center;    
-  align-items: flex-start;    
+  justify-content: center;
+  align-items: flex-start;
   text-align: center;
-  min-width: 320px;
+  min-width: 20rem; /* 320px */
   min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  background-color: #121012;
+  color: white;
 }
 
+/* ========== Text Elements ========== */
 h1, h2, h3, h4, h5, h6 {
   color: #ffffff;
   text-align: center;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1D191D;
-  color: white;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-
-button:hover {
-  border-color: #646cff;
-}
-
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: #ffffff !important;
-    background-color: #1D191D  !important;
-  }
-  a, h1, h2, h3, h4, h5, h6, button {
-    color: #ffffff !important;
-  }
-  button {
-    background-color: #1D191D  !important;
-  }
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 p, span, div, li, label, input, textarea, select {
   color: #ffffff;
 }
-.MuiTypography-root {
-  color: white  !important;
+
+a {
+  font-weight: 500;
+  color: #ffffff;
+  text-decoration: none;
+  margin-top: 0.5rem;
+  display: inline-block;
 }
 
-.textFieldDark {
-  margin-bottom: 16px;          
-  background: #1D191D ;
+a:hover {
+  color: #ffffff;
+  text-decoration: underline;
 }
+
+/* ========== Material UI Component Overrides ========== */
+/* Buttons */
+.MuiButton-root {
+  margin-top: 0.5rem !important;
+}
+
+/* Links */
+.MuiLink-root {
+  margin-top: 0.5rem !important;
+  display: inline-block;
+}
+
+/* Typography */
+.MuiTypography-root {
+  color: #ffffff !important;
+}
+
+/* Inputs & labels */
+label,
+.MuiInputBase-root,
+.MuiFormLabel-root {
+  color: #ffffff !important;
+}
+
+.MuiOutlinedInput-notchedOutline {
+  border-color: #ffffff !important;
+}
+
+/* Make fullWidth TextFields true blocks */
+.MuiFormControl-fullWidth {
+  display: block !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Dark‐variant text field */
+.textFieldDark {
+  margin-bottom: 1rem;
+  background: #1D191D;
+}
+
 .textFieldDark .MuiOutlinedInput-root input {
-  color: #fff;
+  color: #ffffff;
   text-align: center;
 }
+
 .textFieldDark .MuiOutlinedInput-root input::placeholder {
-  color: #fff;
+  color: #ffffff;
   opacity: 1;
   text-align: center;
 }
+
 .textFieldDark .MuiOutlinedInput-root input:focus::placeholder {
-  opacity: 0;                   
+  opacity: 0;
 }
 
 .textFieldDark .MuiOutlinedInput-root fieldset {
-  border-color: #fff;
+  border-color: #ffffff;
 }
 
+/* Pagination */
 .paginationWhite .MuiPaginationItem-root {
-  color: #fff;                
+  color: #ffffff;
 }
+
 .paginationWhite .MuiPaginationItem-root.Mui-selected {
-  background: #fff;            
-  color: #1D191D;                 
+  background: #ffffff;
+  color: #1D191D;
+}
+
+/* ========== Dark Mode Preference Support ========== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #ffffff !important;
+    background-color: #1D191D !important;
+  }
+
+  a, h1, h2, h3, h4, h5, h6, button {
+    color: #ffffff !important;
+  }
+
+  button {
+    background-color: #1D191D !important;
+  }
 }

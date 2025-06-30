@@ -14,7 +14,10 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^7.1.1",
     "@mui/material": "^7.1.1",
+    "@tanstack/history": "^1.121.34",
+    "@tanstack/react-router": "^1.121.39",
     "axios": "^1.10.0",
+    "jwt-decode": "^4.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },

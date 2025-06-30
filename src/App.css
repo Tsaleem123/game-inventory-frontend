@@ -1,0 +1,116 @@
+/* Global base styles */
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #ffffff;
+  background-color: #242424;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Layout and default color handling */
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: center;
+  min-width: 20rem;
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  background-color: #121012;
+  color: white;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  color: #ffffff;
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+/* All typography and form inputs */
+p, span, div, li, label, input, textarea, select {
+  color: #ffffff;
+}
+
+/* =====================
+   MUI Component Tweaks
+   ===================== */
+
+/* Margin top for ALL MUI buttons */
+.MuiButton-root {
+  margin-top: 1.5rem;
+}
+
+/* Margin top for ALL MUI links */
+.MuiLink-root {
+  margin-top: 1.5rem;
+  display: inline-block; /* Ensures margin is respected */
+}
+
+/* MUI Typography and Input adjustments */
+.MuiTypography-root,
+.MuiInputBase-root,
+.MuiFormLabel-root {
+  color: #ffffff !important;
+}
+
+/* Outlined inputs & borders */
+.MuiOutlinedInput-notchedOutline {
+  border-color: #ffffff !important;
+}
+
+/* Custom dark text fields */
+.textFieldDark {
+  margin-bottom: 1rem;
+  background: #1D191D;
+}
+
+.textFieldDark .MuiOutlinedInput-root input {
+  color: #ffffff;
+  text-align: center;
+}
+
+.textFieldDark .MuiOutlinedInput-root input::placeholder {
+  color: #ffffff;
+  opacity: 1;
+  text-align: center;
+}
+
+.textFieldDark .MuiOutlinedInput-root input:focus::placeholder {
+  opacity: 0;
+}
+
+.textFieldDark .MuiOutlinedInput-root fieldset {
+  border-color: #ffffff;
+}
+
+/* Pagination styling */
+.paginationWhite .MuiPaginationItem-root {
+  color: #ffffff;
+}
+
+.paginationWhite .MuiPaginationItem-root.Mui-selected {
+  background: #ffffff;
+  color: #1D191D;
+}
+
+/* Responsive dark scheme support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #ffffff !important;
+    background-color: #1D191D !important;
+  }
+
+  a, h1, h2, h3, h4, h5, h6, button {
+    color: #ffffff !important;
+  }
+
+  button {
+    background-color: #1D191D !important;
+  }
+}

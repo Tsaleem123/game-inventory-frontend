@@ -22,9 +22,9 @@ export async function searchGames(
   pageSize: number = 10
 ): Promise<SearchResponse> {
   // Send request to your local backend API with query parameters
-  const res = await axios.get('https://localhost:7098/api/search', {
-    params: { query, page, pageSize }
-  });
+const res = await axios.get(`${import.meta.env.VITE_ENDPOINT}api/search`, {
+  params: { query, page, pageSize }
+});
 
   // Return the data typed as a SearchResponse object
   return res.data as SearchResponse;

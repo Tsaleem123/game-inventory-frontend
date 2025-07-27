@@ -5,12 +5,12 @@
 
 /* ========== Global Defaults ========== */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  color: #ffffff !important;
+  background-color: #121012 !important;
+  font-family: 'Times New Roman', Times, serif;
   font-weight: 400;
   font-size: 16px;
   line-height: 1.5;
-  color: #ffffff;
-  background-color: #242424;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -20,15 +20,12 @@
 /* ========== Layout ========== */
 body {
   margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  text-align: center;
-  min-width: 20rem; /* 320px */
-  min-height: 100vh;
   font-family: 'Roboto', sans-serif;
   background-color: #121012;
   color: white;
+  min-width: 20rem;
+  min-height: 100vh;
+  text-align: left;
 }
 
 /* ========== Text Elements ========== */
@@ -80,8 +77,37 @@ label,
   color: #ffffff !important;
 }
 
+/* Better border styling for dark theme */
 .MuiOutlinedInput-notchedOutline {
-  border-color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.23) !important;
+}
+
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #645394!important;
+}
+
+/* Ensure input text is white */
+.MuiOutlinedInput-input {
+  color: #ffffff !important;
+}
+
+/* Override autofill background */
+.MuiOutlinedInput-input:-webkit-autofill,
+.MuiOutlinedInput-input:-webkit-autofill:hover,
+.MuiOutlinedInput-input:-webkit-autofill:focus,
+.MuiOutlinedInput-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #121012 inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* For other browsers */
+.MuiOutlinedInput-input:autofill {
+  background-color: #121012 !important;
+  color: #ffffff !important;
 }
 
 /* Make fullWidth TextFields true blocks */
@@ -89,31 +115,6 @@ label,
   display: block !important;
   width: 100% !important;
   box-sizing: border-box !important;
-}
-
-/* Dark‐variant text field */
-.textFieldDark {
-  margin-bottom: 1rem;
-  background: #1D191D;
-}
-
-.textFieldDark .MuiOutlinedInput-root input {
-  color: #ffffff;
-  text-align: center;
-}
-
-.textFieldDark .MuiOutlinedInput-root input::placeholder {
-  color: #ffffff;
-  opacity: 1;
-  text-align: center;
-}
-
-.textFieldDark .MuiOutlinedInput-root input:focus::placeholder {
-  opacity: 0;
-}
-
-.textFieldDark .MuiOutlinedInput-root fieldset {
-  border-color: #ffffff;
 }
 
 /* Pagination */
@@ -125,19 +126,9 @@ label,
   background: #ffffff;
   color: #1D191D;
 }
-
-/* ========== Dark Mode Preference Support ========== */
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: #ffffff !important;
+button {
     background-color: #1D191D !important;
   }
-
-  a, h1, h2, h3, h4, h5, h6, button {
+a, h1, h2, h3, h4, h5, h6, button {
     color: #ffffff !important;
   }
-
-  button {
-    background-color: #1D191D !important;
-  }
-}

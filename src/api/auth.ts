@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // Base URL for authentication-related endpoints
-const API_BASE = 'https://localhost:7098/api/auth'
+const API_BASE = `${import.meta.env.VITE_ENDPOINT}api/auth`;
 
 // Interface for login and register requests
 export interface LoginRequest {

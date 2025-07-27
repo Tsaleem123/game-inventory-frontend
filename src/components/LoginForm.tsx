@@ -3,7 +3,6 @@ import {
   Typography,
   Button,
   TextField,
-  Link,
   Box
 } from '@mui/material';
 import { useNavigate } from '@tanstack/react-router';
@@ -27,8 +26,6 @@ const LoginForm: React.FC<Props> = ({ onLoginSuccess, onLoginAttempt }) => {
     onLoginAttempt?.();
     setError('');
 
-    console.log('Submitting login form:', form);
-
     try {
       const res = await fetch('https://localhost:7098/api/auth/login', {
         method: 'POST',
@@ -36,25 +33,26 @@ const LoginForm: React.FC<Props> = ({ onLoginSuccess, onLoginAttempt }) => {
         body: JSON.stringify(form),
       });
 
-      console.log('Fetch response:', res.status, res.statusText);
-
       if (!res.ok) {
-        const errText = await res.text();
-        console.error('Login error response:', errText);
         setError('Login failed. Please check your credentials.');
         return;
       }
 
       const data = await res.json();
-      console.log('Login success:', data);
-
       localStorage.setItem('token', data.token);
+      localStorage.removeItem('isGuest');
       onLoginSuccess?.(data.token);
       navigate({ to: '/app' });
     } catch (err) {
       console.error('Network error:', err);
       setError('An error occurred. Please try again later.');
     }
+  };
+
+  const handleGuest = () => {
+    localStorage.setItem('isGuest', 'true');
+    localStorage.removeItem('token');
+    navigate({ to: '/app' });
   };
 
   return (
@@ -109,9 +107,18 @@ const LoginForm: React.FC<Props> = ({ onLoginSuccess, onLoginAttempt }) => {
         fullWidth
         variant="text"
         onClick={() => navigate({ to: '/forgot-password' })}
-        sx={{ mt: 2 }}
+        sx={{ mt: 1 }}
       >
         Forgot Password?
+      </Button>
+
+      <Button
+        fullWidth
+        variant="text"
+        onClick={handleGuest}
+        sx={{ mt: 3 }}
+      >
+        Continue as Guest
       </Button>
     </Box>
   );

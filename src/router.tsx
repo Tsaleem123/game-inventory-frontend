@@ -1,130 +1,120 @@
-// Import required TanStack Router modules and components
 import {
-    RouterProvider,
-    createRouter,
-    createRoute,
-    createRootRoute,
-} from '@tanstack/react-router'
-import { Outlet, useNavigate } from '@tanstack/react-router'
-import { createBrowserHistory } from '@tanstack/history'
+  RouterProvider,
+  createRouter,
+  createRoute,
+  createRootRoute,
+} from '@tanstack/react-router';
+import { Outlet, useNavigate } from '@tanstack/react-router';
+import { createBrowserHistory } from '@tanstack/history';
 
-// Import application components
-import App from './App'
-import LoginForm from './components/LoginForm'
-import Signup from './components/Signup'
-import ForgotPassword from './components/ForgotPassword'
-import ResetPassword from './components/ResetPassword'
+import App from './App';
+import LoginForm from './components/LoginForm';
+import Signup from './components/Signup';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
+import UserGameList from './components/UserGameList';
 
-/* ─────────────────────────────────────────────────────────────
- * 1) Create the root route
- * This serves as the parent route and wraps all child routes
- * with <Outlet /> so nested routes render properly.
- * ───────────────────────────────────────────────────────────── */
+// Root layout route
 const rootRoute = createRootRoute({
-    component: () => <div><Outlet /></div>,
-})
+  component: () => <div><Outlet /></div>,
+});
 
-/* ─────────────────────────────────────────────────────────────
- * 2) Define child routes (login, signup, forgot/reset password, app)
- * Each route declares its path and component, with optional 
- * redirection or token handling logic.
- * ───────────────────────────────────────────────────────────── */
-
-// Login route (default landing route)
+// Login route with redirect if already logged in
 const loginRoute = createRoute({
-    getParentRoute: () => rootRoute,
-    path: '/',
-    component: LoginForm,
-})
+  getParentRoute: () => rootRoute,
+  path: '/',
+  component: () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      window.location.href = '/app';
+      return null;
+    }
+    return <LoginForm />;
+  },
+});
 
-// Signup route with navigation callbacks
+// Signup route
 const signupRoute = createRoute({
-    getParentRoute: () => rootRoute,
-    path: '/signup',
-    component: () => {
-        const navigate = useNavigate()
-        return (
-            <Signup
-                onSignupSuccess={() => navigate({ to: '/' })} // Redirect to login on success
-                onback={() => navigate({ to: '/' })}         // Allow navigating back to login
-            />
-        )
-    },
-})
+  getParentRoute: () => rootRoute,
+  path: '/signup',
+  component: () => {
+    const navigate = useNavigate();
+    return (
+      <Signup
+        onSignupSuccess={() => navigate({ to: '/' })}
+        onback={() => navigate({ to: '/' })}
+      />
+    );
+  },
+});
 
-// Forgot Password route with back navigation
+// Forgot password route
 const forgotRoute = createRoute({
-    getParentRoute: () => rootRoute,
-    path: '/forgot-password',
-    component: () => {
-        const navigate = useNavigate()
-        return (
-            <ForgotPassword onback={() => navigate({ to: '/' })} />
-        )
-    },
-})
+  getParentRoute: () => rootRoute,
+  path: '/forgot-password',
+  component: () => {
+    const navigate = useNavigate();
+    return <ForgotPassword onback={() => navigate({ to: '/' })} />;
+  },
+});
 
-// Reset Password route with token/email validation
+// Reset password route
 const resetRoute = createRoute({
-    getParentRoute: () => rootRoute,
-    path: '/reset-password',
-    component: () => {
-        const navigate = useNavigate()
+  getParentRoute: () => rootRoute,
+  path: '/reset-password',
+  component: () => {
+    const navigate = useNavigate();
+    const params = new URLSearchParams(window.location.search);
+    const email = params.get('email') || '';
+    const token = params.get('token') || '';
 
-        // Extract token and email from URL query params
-        const params = new URLSearchParams(window.location.search)
-        const email = params.get('email') || ''
-        const token = params.get('token') || ''
+    if (!email || !token) return <div>Invalid reset link</div>;
 
-        // Show error if either is missing
-        if (!email || !token) {
-            return <div>Invalid reset link</div>
-        }
+    return (
+      <ResetPassword
+        email={email}
+        token={token}
+        onDone={() => navigate({ to: '/' })}
+      />
+    );
+  },
+});
 
-        return (
-            <ResetPassword
-                email={email}
-                token={token}
-                onDone={() => navigate({ to: '/' })} // Redirect to login when done
-            />
-        )
-    },
-})
-
-// Protected /app route that checks for JWT token in localStorage
+//app route 
 const appRoute = createRoute({
-    getParentRoute: () => rootRoute,
-    path: '/app',
-    component: () => {
-        const token = localStorage.getItem('token')
-        if (!token) {
-            // Redirect to login if token is missing
-            window.location.href = '/'
-            return null
-        }
-        return <App />
-    },
-})
+  getParentRoute: () => rootRoute,
+  path: '/app',
+  component: () => <App />,
+});
 
-/* ─────────────────────────────────────────────────────────────
- * 3) Create the router instance
- * Adds all routes as children to the root route
- * ───────────────────────────────────────────────────────────── */
+// Protected /my-games route
+const userGameRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/my-games',
+  component: () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = '/';
+      return null;
+    }
+    return <UserGameList />;
+  },
+});
+
+// Create router instance
 export const router = createRouter({
-    history: createBrowserHistory(),
-    routeTree: rootRoute.addChildren([
-        loginRoute,
-        signupRoute,
-        forgotRoute,
-        resetRoute,
-        appRoute,
-    ]),
-})
+  history: createBrowserHistory(),
+  routeTree: rootRoute.addChildren([
+    loginRoute,
+    signupRoute,
+    forgotRoute,
+    resetRoute,
+    appRoute,
+    userGameRoute,
+  ]),
+});
 
-/* ─────────────────────────────────────────────────────────────
- * 4) Provide the router to your app
- * This is the entry point used in main.tsx or App.tsx
- * ───────────────────────────────────────────────────────────── */
+// Provide router
 export function AppRouter() {
-    return <RouterProvider router={router} />
+  return <RouterProvider router={router} />;
 }

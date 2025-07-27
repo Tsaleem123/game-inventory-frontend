@@ -1,17 +1,29 @@
 import {
   ListItem,
   Avatar,
-  ListItemText,
   Typography,
-  Stack
+  Button,
+  Box
 } from '@mui/material';
 import type { Game } from '../types/Game';
 
+/**
+ * Props interface for the GameListItem component
+ */
 interface Props {
+  /** The game object containing all game information */
   game: Game;
+  /** Optional callback function to handle adding game to user's list */
+  onAdd?: (game: Game) => void;
 }
 
-const GameListItem: React.FC<Props> = ({ game }) => {
+/**
+ * GameListItem component that displays a single game in a list format
+ * Shows game image, name, description, release year, developers/publishers,
+ * and optionally an "Add to My List" button
+ */
+const GameListItem: React.FC<Props> = ({ game, onAdd }) => {
+  // Destructure game properties with default values for optional fields
   const {
     name,
     image,
@@ -21,91 +33,109 @@ const GameListItem: React.FC<Props> = ({ game }) => {
     publishers = []
   } = game;
 
+  // Extract release year from the original release date
   const releaseYear = original_release_date
     ? new Date(original_release_date).getFullYear()
     : null;
 
+  // Combine developers and publishers into a single comma-separated string
   const studioNames = [...developers, ...publishers]
     .map((s: any) => s.name)
     .join(', ');
+
+  /**
+   * Handles the "Add to My List" button click
+   * Checks for authentication token and calls the onAdd callback if provided
+   */
+  const handleAdd = () => {
+    // Check if user is authenticated by looking for token in localStorage
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Please log in to save games to your list.');
+      return;
+    }
+
+    // Call the onAdd callback if it exists
+    if (onAdd) onAdd(game);
+  };
 
   return (
     <ListItem
       divider
       alignItems="flex-start"
       sx={{
-  py: '1rem',
-  px: '1.5rem',
-  border: '1px solid white',
-  borderRadius: '0.75rem',
-  mb: '1rem',
-  backgroundColor: '#1D191D',
-  boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-  '&:hover': {
-    transform: 'scale(1.02)',
-    boxShadow: '0 6px 18px rgba(0,0,0,0.5)',
-    borderColor: '#a78bfa', // optional light purple hover border
-    cursor: 'pointer'
-  }
-}}
+        py: '1rem',
+        px: '1.5rem',
+        border: '1px solid white',
+        borderRadius: '0.75rem',
+        mb: '1rem',
+        backgroundColor: '#1D191D',
+        display: 'flex',
+        alignItems: 'flex-start',
+      }}
     >
-      {/* Game thumbnail */}
+      {/* Game image/icon */}
       <Avatar
         src={image?.icon_url || ''}
         alt={name}
         sx={{
-          width: '4rem',         // 64px
+          width: '4rem',
           height: '4rem',
           mr: '1rem',
-          border: '.2rem solid #3A353A;',
-          borderRadius: '0.5rem',        // Keep it consistent with ListItem
-          backgroundColor: '#000'        // Optional: fallback bg color if image fails
+          border: '.2rem solid #3A353A',
+          borderRadius: '0.5rem',
+          backgroundColor: '#000',
         }}
         variant="rounded"
       />
 
-      <ListItemText
-        primary={
-          <Typography variant="h6" color="white" sx={{ fontSize: '1.25rem' }}>
-            {name}
+      {/* Game information container */}
+      <Box sx={{ flex: 1 }}>
+        {/* Game title */}
+        <Typography variant="h6" color="white" sx={{ fontSize: '1.25rem' }}>
+          {name}
+        </Typography>
+
+        {/* Game details container */}
+        <Box mt={1}>
+          {/* Game description */}
+          <Typography variant="body2" color="white" sx={{ mb: 0.5 }}>
+            {deck || 'No description'}
           </Typography>
-        }
-        secondary={
-          <Stack spacing={0.5}>
-            {/* Description */}
-            <Typography
-              variant="body2"
-              color="white"
-              sx={{ fontSize: '0.875rem' }}
-            >
-              {deck || 'No description'}
+
+          {/* Release year - only shown if available */}
+          {releaseYear && (
+            <Typography variant="caption" color="#ccc" sx={{ display: 'block', mb: 0.5 }}>
+              Released: {releaseYear}
             </Typography>
+          )}
 
-            {/* Release year */}
-            {releaseYear && (
-              <Typography
-                variant="caption"
-                color="#ccc"
-                sx={{ fontSize: '0.75rem' }}
-              >
-                Released: {releaseYear}
-              </Typography>
-            )}
+          {/* Developer/Publisher names - only shown if available */}
+          {studioNames && (
+            <Typography variant="caption" color="#ccc" sx={{ display: 'block', mb: 0.5 }}>
+              {studioNames}
+            </Typography>
+          )}
 
-            {/* Studios / publishers */}
-            {studioNames && (
-              <Typography
-                variant="caption"
-                color="#ccc"
-                sx={{ fontSize: '0.75rem' }}
-              >
-                {studioNames}
-              </Typography>
-            )}
-          </Stack>
-        }
-      />
+          {/* Add to list button - only shown if onAdd callback is provided */}
+          {onAdd && (
+            <Button
+              onClick={handleAdd}
+              variant="outlined"
+              color="secondary"
+              sx={{
+                borderColor: 'white',
+                display: 'flex',
+                justifyContent: 'center',
+                mt: 1,
+                maxWidth: '50%',
+              }}
+            >
+              Add to My List
+            </Button>
+          )}
+        </Box>
+      </Box>
     </ListItem>
   );
 };

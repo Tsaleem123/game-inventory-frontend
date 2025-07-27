@@ -1,19 +1,25 @@
+
 import { Box, Pagination } from '@mui/material';
 
-// Props expected from the parent component
+/**
+ * Props interface for the Pager component
+ */
 interface Props {
-  page: number;                            // current page
-  pageCount: number;                       // total number of pages
-  onChange: (event: React.ChangeEvent<unknown>, value: number) => void; // handler for page change
+  /** Current active page number (1-based) */
+  page: number;
+  /** Total number of pages available */
+  pageCount: number;
+  /** Callback function triggered when user changes page */
+  onChange: (event: React.ChangeEvent<unknown>, value: number) => void;
 }
 
 /**
- * Pager component
- * Renders a Material UI pagination bar centered in a Box,
- * but only if there’s more than one page.
+ * Pager component that renders a Material UI pagination control
+ * Provides navigation between pages with outlined styling and custom CSS class
+ * Automatically hides when there's only one page or no pages
  */
 const Pager: React.FC<Props> = ({ page, pageCount, onChange }) => {
-  // Only render if pagination is needed
+  // Don't render pagination if there's only one page or no pages
   if (pageCount <= 1) return null;
 
   return (
@@ -23,7 +29,7 @@ const Pager: React.FC<Props> = ({ page, pageCount, onChange }) => {
         page={page}
         onChange={onChange}
         variant="outlined"
-        className="paginationWhite"
+        className="paginationWhite" 
       />
     </Box>
   );

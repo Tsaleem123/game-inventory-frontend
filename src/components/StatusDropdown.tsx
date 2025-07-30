@@ -27,6 +27,7 @@ const statusOptions = ['To be played', 'In Progress', 'Dropped', 'Finished'];
 const StatusDropdown: React.FC<StatusDropdownProps> = ({ value, onChange }) => {
   return (
     <TextField
+    
       select // Enables dropdown/select behavior
       label="Status"
       value={value}

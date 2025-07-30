@@ -49,11 +49,14 @@ const App: React.FC = () => {
         sx={{
           width: '100%',
           display: 'flex',
-          justifyContent: 'flex-end', // Align buttons to the right
-          gap: 1, // Space between buttons
-          pt: 2, // Top padding
-          pr: 3, // Right padding
+          justifyContent: { xs: 'center', sm: 'flex-end' },
+          alignItems: 'center',
+          gap: { xs: 1, sm: 1.5 },
+          pt: { xs: 1.5, sm: 2 },
+          pr: { xs: 2, sm: 3 },
+          pl: { xs: 2, sm: 0 },
           boxSizing: 'border-box',
+          flexWrap: 'wrap', // Allow wrapping on very small screens
         }}
       >
         {/* Navigate to user's game list */}
@@ -61,7 +64,19 @@ const App: React.FC = () => {
           variant="outlined"
           size="small"
           onClick={handleViewGamesClick}
-          sx={{ borderColor: 'white' }}
+          sx={{ 
+            borderColor: 'white',
+            color: 'white',
+            fontSize: { xs: '0.75rem', sm: '0.875rem' },
+            px: { xs: 1.5, sm: 2 },
+            py: { xs: 0.5, sm: 0.75 },
+            minWidth: 'fit-content',
+            whiteSpace: 'nowrap',
+            '&:hover': {
+              borderColor: 'rgba(255, 255, 255, 0.8)',
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            }
+          }}
         >
           View My Games
         </Button>
@@ -71,7 +86,19 @@ const App: React.FC = () => {
           variant="outlined"
           size="small"
           onClick={isLoggedIn ? handleLogout : handleLogin}
-          sx={{ borderColor: 'white' }}
+          sx={{ 
+            borderColor: 'white',
+            color: 'white',
+            fontSize: { xs: '0.75rem', sm: '0.875rem' },
+            px: { xs: 1.5, sm: 2 },
+            py: { xs: 0.5, sm: 0.75 },
+            minWidth: 'fit-content',
+            whiteSpace: 'nowrap',
+            '&:hover': {
+              borderColor: 'rgba(255, 255, 255, 0.8)',
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            }
+          }}
         >
           {isLoggedIn ? 'Logout' : 'Login'}
         </Button>

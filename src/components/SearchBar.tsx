@@ -13,6 +13,13 @@ interface Props {
  */
 const SearchBar: React.FC<Props> = ({ value, onChange }) => (
   <TextField
+    sx={{
+      maxWidth: { xs: '100%', sm: '80%', md: '60%' },
+      '& .MuiInputBase-root': {
+        fontSize: { xs: '14px', sm: '16px' }
+      }
+    }}
+
     fullWidth                  // spans the container width
     placeholder="Search for a game"
     value={value}              // controlled input value

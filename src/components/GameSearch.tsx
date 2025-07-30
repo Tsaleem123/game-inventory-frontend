@@ -22,22 +22,22 @@ const pageSize = 10;
 const GameSearch: React.FC = () => {
   // State for the current search query input
   const [query, setQuery] = useState('');
-  
+
   // State for the debounced search query (used for actual API calls)
   const [debouncedQuery, setDebouncedQuery] = useState(query);
-  
+
   // State for the current page number
   const [page, setPage] = useState(1);
-  
+
   // State for storing search results
   const [results, setResults] = useState<Game[]>([]);
-  
+
   // State for storing total number of results (for pagination)
   const [total, setTotal] = useState(0);
-  
+
   // State for loading indicator
   const [loading, setLoading] = useState(false);
-  
+
   /**
    * Effect for debouncing the search query
    * Delays the API call by 500ms after user stops typing
@@ -110,27 +110,30 @@ const GameSearch: React.FC = () => {
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
-            // Reset to first page when search query changes
             setPage(1);
           }}
           sx={{
-            width: 400,
-            // Styling for dark theme compatibility
-            input: { color: 'white' }, // Input text color
-            label: { color: 'rgba(255, 255, 255, 0.7)' }, // Label color
+            width: {
+              sm: '75%',      
+              md: '60%',     
+              lg: '50%'      
+            },
+            // Rest of your styling
+            input: { color: 'white' },
+            label: { color: 'rgba(255, 255, 255, 0.7)' },
             '& .MuiInputLabel-root.Mui-focused': {
-              color: '#1976d2' // Focused label color
+              color: '#1976d2'
             },
             '& .MuiOutlinedInput-root': {
-              backgroundColor: 'rgba(255, 255, 255, 0.1)', // Semi-transparent background
-              '& fieldset': { 
-                borderColor: 'rgba(255, 255, 255, 0.23)' // Default border color
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              '& fieldset': {
+                borderColor: 'rgba(255, 255, 255, 0.23)'
               },
-              '&:hover fieldset': { 
-                borderColor: 'rgba(255, 255, 255, 0.5)' // Hover border color
+              '&:hover fieldset': {
+                borderColor: 'rgba(255, 255, 255, 0.5)'
               },
-              '&.Mui-focused fieldset': { 
-                borderColor: '#1976d2' // Focused border color
+              '&.Mui-focused fieldset': {
+                borderColor: '#1976d2'
               }
             }
           }}

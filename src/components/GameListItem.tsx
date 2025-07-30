@@ -60,83 +60,125 @@ const GameListItem: React.FC<Props> = ({ game, onAdd }) => {
   };
 
   return (
-    <ListItem
-      divider
-      alignItems="flex-start"
-      sx={{
-        py: '1rem',
-        px: '1.5rem',
-        border: '1px solid white',
-        borderRadius: '0.75rem',
-        mb: '1rem',
-        backgroundColor: '#1D191D',
-        display: 'flex',
-        alignItems: 'flex-start',
+<ListItem
+  divider
+  alignItems="flex-start"
+  sx={{
+    py: { xs: '0.75rem', sm: '1rem' },
+    px: { xs: '1rem', sm: '1.5rem' },
+    border: '1px solid white',
+    borderRadius: '0.75rem',
+    mb: '1rem',
+    backgroundColor: '#1D191D',
+    display: 'flex',
+    alignItems: 'flex-start',
+    flexDirection: { xs: 'column', sm: 'row' }, // Stack vertically on mobile
+  }}
+>
+  {/* Game image/icon */}
+  <Avatar
+    src={image?.icon_url || ''}
+    alt={name}
+    sx={{
+      width: { xs: '3rem', sm: '4rem' },
+      height: { xs: '3rem', sm: '4rem' },
+      mr: { xs: 0, sm: '1rem' },
+      mb: { xs: '0.75rem', sm: 0 }, // Add bottom margin on mobile
+      border: '.2rem solid #3A353A',
+      borderRadius: '0.5rem',
+      backgroundColor: '#000',
+      alignSelf: { xs: 'center', sm: 'flex-start' }, // Center on mobile
+    }}
+    variant="rounded"
+  />
+
+  {/* Game information container */}
+  <Box sx={{ 
+    flex: 1,
+    width: { xs: '100%', sm: 'auto' }, // Full width on mobile
+    textAlign: { xs: 'center', sm: 'left' }, // Center text on mobile
+  }}>
+    {/* Game title */}
+    <Typography 
+      variant="h6" 
+      color="white" 
+      sx={{ 
+        fontSize: { xs: '1.1rem', sm: '1.25rem' },
+        lineHeight: { xs: 1.3, sm: 1.2 },
       }}
     >
-      {/* Game image/icon */}
-      <Avatar
-        src={image?.icon_url || ''}
-        alt={name}
-        sx={{
-          width: '4rem',
-          height: '4rem',
-          mr: '1rem',
-          border: '.2rem solid #3A353A',
-          borderRadius: '0.5rem',
-          backgroundColor: '#000',
+      {name}
+    </Typography>
+
+    {/* Game details container */}
+    <Box mt={{ xs: 0.75, sm: 1 }}>
+      {/* Game description */}
+      <Typography 
+        variant="body2" 
+        color="white" 
+        sx={{ 
+          mb: 0.5,
+          fontSize: { xs: '0.85rem', sm: '0.875rem' },
+          lineHeight: { xs: 1.4, sm: 1.43 },
         }}
-        variant="rounded"
-      />
+      >
+        {deck || 'No description'}
+      </Typography>
 
-      {/* Game information container */}
-      <Box sx={{ flex: 1 }}>
-        {/* Game title */}
-        <Typography variant="h6" color="white" sx={{ fontSize: '1.25rem' }}>
-          {name}
+      {/* Release year - only shown if available */}
+      {releaseYear && (
+        <Typography 
+          variant="caption" 
+          color="#ccc" 
+          sx={{ 
+            display: 'block', 
+            mb: 0.5,
+            fontSize: { xs: '0.75rem', sm: '0.75rem' },
+          }}
+        >
+          Released: {releaseYear}
         </Typography>
+      )}
 
-        {/* Game details container */}
-        <Box mt={1}>
-          {/* Game description */}
-          <Typography variant="body2" color="white" sx={{ mb: 0.5 }}>
-            {deck || 'No description'}
-          </Typography>
+      {/* Developer/Publisher names - only shown if available */}
+      {studioNames && (
+        <Typography 
+          variant="caption" 
+          color="#ccc" 
+          sx={{ 
+            display: 'block', 
+            mb: 0.5,
+            fontSize: { xs: '0.75rem', sm: '0.75rem' },
+          }}
+        >
+          {studioNames}
+        </Typography>
+      )}
 
-          {/* Release year - only shown if available */}
-          {releaseYear && (
-            <Typography variant="caption" color="#ccc" sx={{ display: 'block', mb: 0.5 }}>
-              Released: {releaseYear}
-            </Typography>
-          )}
-
-          {/* Developer/Publisher names - only shown if available */}
-          {studioNames && (
-            <Typography variant="caption" color="#ccc" sx={{ display: 'block', mb: 0.5 }}>
-              {studioNames}
-            </Typography>
-          )}
-
-          {/* Add to list button - only shown if onAdd callback is provided */}
-          {onAdd && (
-            <Button
-              onClick={handleAdd}
-              variant="outlined"
-              color="secondary"
-              sx={{
-                borderColor: 'white',
-                display: 'flex',
-                justifyContent: 'center',
-                mt: 1,
-                maxWidth: '50%',
-              }}
-            >
-              Add to My List
-            </Button>
-          )}
-        </Box>
-      </Box>
-    </ListItem>
+      {/* Add to list button - only shown if onAdd callback is provided */}
+      {onAdd && (
+        <Button
+          onClick={handleAdd}
+          variant="outlined"
+          color="secondary"
+          sx={{
+            borderColor: 'white',
+            display: 'flex',
+            justifyContent: 'center',
+            mt: { xs: 0.75, sm: 1 },
+            width: { xs: '100%', sm: 'auto' }, // Full width on mobile
+            maxWidth: { xs: '100%', sm: '50%' },
+            fontSize: { xs: '0.85rem', sm: '0.875rem' },
+            py: { xs: '0.5rem', sm: '0.375rem' },
+            alignSelf: { xs: 'stretch', sm: 'flex-start' },
+          }}
+        >
+          Add to My List
+        </Button>
+      )}
+    </Box>
+  </Box>
+</ListItem>
   );
 };
 

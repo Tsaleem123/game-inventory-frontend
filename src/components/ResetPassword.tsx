@@ -27,13 +27,13 @@ interface Props {
 const ResetPassword: React.FC<Props> = ({ email, token, onDone }) => {
   // State for new password input
   const [newPass, setNewPass] = useState('');
-  
+
   // State for password confirmation input
   const [confirmPass, setConfirmPass] = useState('');
-  
+
   // State for storing and displaying error messages
   const [error, setError] = useState('');
-  
+
   // State for storing and displaying success messages
   const [success, setSuccess] = useState('');
 
@@ -44,7 +44,7 @@ const ResetPassword: React.FC<Props> = ({ email, token, onDone }) => {
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Clear any existing messages
     setError('');
     setSuccess('');
@@ -65,7 +65,7 @@ const ResetPassword: React.FC<Props> = ({ email, token, onDone }) => {
       // Call API to reset password with email, token, and new password
       const message = await resetPassword({ email, token, newPassword: newPass });
       setSuccess(message);
-      
+
       // Auto-redirect to login after 2 seconds on success
       setTimeout(onDone, 2000);
     } catch (err: any) {
@@ -78,7 +78,14 @@ const ResetPassword: React.FC<Props> = ({ email, token, onDone }) => {
     <Box
       component="form"
       onSubmit={handleSubmit}
-      sx={{ maxWidth: 400, minWidth: 400, mx: 'auto', mt: 6, textAlign: 'center' }}
+      sx={{
+        maxWidth: { xs: '90%', sm: 400, md:500 },
+        mx: 'auto',
+        mt: 6,
+        textAlign: 'center',
+        px: { xs: 2, sm: 0 }
+      }}
+
     >
       {/* Page heading */}
       <Typography variant="h5" gutterBottom>

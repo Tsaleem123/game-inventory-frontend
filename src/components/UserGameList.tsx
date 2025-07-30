@@ -191,84 +191,124 @@ const UserGameItem = ({
   }
 
   return (
-
     <Card
-      variant="outlined"
-      sx={{
-        backgroundColor: '#121012',
-        color: 'white',
-        borderRadius: 2,
-        border: '1px solid #333',
-      }}
-    >
-      <CardContent sx={{ p: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-          {/* Game Image */}
-          <Box
-            component="img"
-            src={game?.image?.icon_url || '/placeholder.png'}
-            alt={game?.name}
-            sx={{
-              width: 80,
-              height: 80,
-              borderRadius: 1,
-              objectFit: 'cover',
-              backgroundColor: '#2a2a2a',
-              flexShrink: 0
-            }}
-          />
+  variant="outlined"
+  sx={{
+    backgroundColor: '#121012',
+    color: 'white',
+    borderRadius: 2,
+    border: '1px solid #333',
+  }}
+>
+  <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+    <Box sx={{ 
+      display: 'flex', 
+      alignItems: { xs: 'flex-start', sm: 'center' },
+      gap: { xs: 2, sm: 3 },
+      flexDirection: { xs: 'column', sm: 'row' }
+    }}>
+      {/* Game Image and Title Container - Mobile Layout */}
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: { xs: 2, sm: 3 },
+        width: { xs: '100%', sm: 'auto' },
+        flex: { xs: 'none', sm: 1 },
+        minWidth: { xs: 'auto', sm: 0 }
+      }}>
+        {/* Game Image */}
+        <Box
+          component="img"
+          src={game?.image?.icon_url || '/placeholder.png'}
+          alt={game?.name}
+          sx={{
+            width: { xs: 60, sm: 80 },
+            height: { xs: 60, sm: 80 },
+            borderRadius: 1,
+            objectFit: 'cover',
+            backgroundColor: '#2a2a2a',
+            flexShrink: 0
+          }}
+        />
 
-          {/* Game Title */}
-          <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography 
-              variant="h6" 
-              sx={{ 
-                fontWeight: 'bold',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              {game?.name ?? 'Unknown Game'}
-            </Typography>
+        {/* Game Title */}
+        <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              fontWeight: 'bold',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              fontSize: { xs: '1.1rem', sm: '1.25rem' }
+            }}
+          >
+            {game?.name ?? 'Unknown Game'}
+          </Typography>
+        </Box>
+      </Box>
+
+      {/* Status and Rating Dropdowns - Stack on mobile */}
+      <Box sx={{ 
+        display: 'flex', 
+        gap: { xs: 1.5, sm: 3 },
+        flexShrink: 0,
+        width: { xs: '100%', sm: 'auto' },
+        flexDirection: { xs: 'column', sm: 'row' },
+        alignItems: { xs: 'stretch', sm: 'center', md:'center' }
+      }}>
+        {/* Controls Row - Horizontal on mobile for dropdowns */}
+        <Box sx={{
+          display: 'flex',
+          gap: { xs: 1.5, sm: 3 },
+          width: { xs: '100%', sm: 'auto' },
+          alignItems: 'center'
+        }}>
+          <Box sx={{ 
+            minWidth: { xs: 'auto', sm: 120 },
+            flex: { xs: 1, sm: 'none' }
+          }}>
+            <StatusDropdown
+              value={entry.status}
+              onChange={(status) => onStatusChange(entry.gameId, status)}
+            />
           </Box>
 
-          {/* Status and Rating Dropdowns */}
-          <Box sx={{ display: 'flex', gap: 3, alignItems: 'center', flexShrink: 0 }}>
-            <Box sx={{ minWidth: 120 }}>
-              <StatusDropdown
-                value={entry.status}
-                onChange={(status) => onStatusChange(entry.gameId, status)}
-              />
-            </Box>
-
-            <Box sx={{ minWidth: 100 }}>
-              <RatingDropdown
-                value={entry.rating ?? 0}
-                onChange={(rating) => onRatingChange(entry.gameId, rating)}
-                labelId={`rating-${entry.gameId}`}
-              />
-            </Box>
-
-            {/* Remove Button - Grouped with controls */}
-            <Button
-              onClick={() => onRemove(entry.gameId)}
-              variant="outlined"
-              sx={{
-                height: 36,
-                minWidth: 80,
-                color: 'error.main',
-                borderColor: 'error.main',
-                fontWeight: 500,
-                textTransform: 'none',
-              }}
-            >
-              Remove
-            </Button>
+          <Box sx={{ 
+            minWidth: { xs: 'auto', sm: 100 },
+            flex: { xs: 1, sm: 'none' }
+          }}>
+            <RatingDropdown
+              value={entry.rating ?? 0}
+              onChange={(rating) => onRatingChange(entry.gameId, rating)}
+              labelId={`rating-${entry.gameId}`}
+            />
           </Box>
         </Box>
-      </CardContent>
-    </Card>
+
+        {/* Remove Button - Full width on mobile */}
+        <Button
+          onClick={() => onRemove(entry.gameId)}
+          variant="outlined"
+          sx={{
+            height: { xs: 44, sm: 36 },
+            minWidth: { xs: 'auto', sm: 80 },
+            width: { xs: '100%', sm: 'auto' },
+            color: 'error.main',
+            borderColor: 'error.main',
+            fontWeight: 500,
+            textTransform: 'none',
+            fontSize: { xs: '0.9rem', sm: '0.875rem' },
+            py: { xs: 1, sm: 0.5 }
+          }}
+        >
+          Remove
+        </Button>
+      </Box>
+    </Box>
+  </CardContent>
+</Card>
+
   );
 };
 

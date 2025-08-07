@@ -8,117 +8,196 @@ interface SignupProps {
   onback: () => void           // Callback to return to login screen
 }
 
+// Field validation configuration
+const VALIDATION_RULES = {
+  email: {
+    required: true,
+    validator: (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+    errorMessage: 'Please enter a valid email address'
+  },
+  password: {
+    required: true,
+    validator: (value: string) => {
+      const checks = {
+        minLength: value.length >= 6,
+        uppercase: /[A-Z]/.test(value),
+        lowercase: /[a-z]/.test(value),
+        number: /\d/.test(value),
+        special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value)
+      }
+      return Object.values(checks).every(Boolean)
+    },
+    errorMessage: (value: string) => {
+      const issues = []
+      if (value.length < 6) issues.push('at least 6 characters')
+      if (!/[A-Z]/.test(value)) issues.push('1 uppercase letter')
+      if (!/[a-z]/.test(value)) issues.push('1 lowercase letter')
+      if (!/\d/.test(value)) issues.push('1 number')
+      if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value)) issues.push('1 special character')
+      return `Password must contain: ${issues.join(', ')}`
+    }
+  }
+}
+
 // Signup form component
 const Signup: React.FC<SignupProps> = ({ onSignupSuccess, onback }) => {
-  // Local state for form inputs
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-
-  // States for feedback and control
-  const [error, setError] = useState('')
+  // Form state
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  })
+  
+  // Touched fields tracking
+  const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({})
+  
+  // UI state
+  const [serverError, setServerError] = useState('')
   const [success, setSuccess] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Simple regex-based email format validation
-  const isValidEmail = (email: string) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  // Generic field update handler
+  const handleFieldChange = (field: keyof typeof formData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, [field]: e.target.value }))
+  }
+
+  // Generic field blur handler
+  const handleFieldBlur = (field: string) => () => {
+    setTouchedFields(prev => ({ ...prev, [field]: true }))
+  }
+
+  // Generic validation function
+  const validateField = (field: keyof typeof VALIDATION_RULES, value: string) => {
+    const rule = VALIDATION_RULES[field]
+    const isTouched = touchedFields[field]
+    const isEmpty = value.length === 0
+    const isInvalid = value.length > 0 && !rule.validator(value)
+
+    return {
+      hasError: isTouched && (isEmpty || isInvalid),
+      helperText: (() => {
+        if (!isTouched) return ''
+        if (isEmpty && rule.required) return `${field.charAt(0).toUpperCase() + field.slice(1)} is required`
+        if (isInvalid) {
+          return typeof rule.errorMessage === 'function' 
+            ? rule.errorMessage(value) 
+            : rule.errorMessage
+        }
+        return ''
+      })()
+    }
+  }
+
+  // Check if entire form is valid
+  const isFormValid = () => {
+    return Object.entries(formData).every(([field, value]) => {
+      const rule = VALIDATION_RULES[field as keyof typeof VALIDATION_RULES]
+      return value.length > 0 && rule.validator(value)
+    })
+  }
 
   // Handle form submission
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
+    setServerError('')
     setSuccess('')
 
-    // Validate email format
-    if (!isValidEmail(email)) {
-      setError('Please enter a valid email address.')
-      return
-    }
+    // Mark all fields as touched to show validation errors
+    const allFieldsTouched = Object.keys(formData).reduce((acc, field) => {
+      acc[field] = true
+      return acc
+    }, {} as Record<string, boolean>)
+    setTouchedFields(allFieldsTouched)
 
-    // Validate password length
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters.')
-      return
-    }
+    // Don't submit if form is invalid
+    if (!isFormValid()) return
 
     setIsSubmitting(true)
 
     try {
-      // Attempt to register the user
-      const message = await registerUser({ email, password })
+      const message = await registerUser(formData)
 
-      // Display a user-friendly success message
-      if (
-        message?.toLowerCase().includes('verify') ||
-        message?.toLowerCase().includes('confirmation')
-      ) {
+      // Display success message
+      if (message?.toLowerCase().includes('verify') || message?.toLowerCase().includes('confirmation')) {
         setSuccess('Signup successful! Please check your inbox to verify your email.')
       } else {
         setSuccess(message || 'Signup successful.')
       }
 
-      // Delay redirect to allow user to read the message
-      setTimeout(() => {
-        onSignupSuccess()
-      }, 3000)
+      // Delay redirect
+      setTimeout(() => onSignupSuccess(), 3000)
     } catch (err: any) {
-      // Handle server-side validation or other errors
+      // Handle server errors
       if (err.response?.data?.errors) {
-        setError(err.response.data.errors.join(', '))
+        setServerError(err.response.data.errors.join(', '))
       } else if (err.response?.data?.message) {
-        setError(err.response.data.message)
+        setServerError(err.response.data.message)
       } else {
-        setError('Signup failed. Please try again.')
+        setServerError('Signup failed. Please try again.')
       }
     } finally {
       setIsSubmitting(false)
     }
   }
 
+  // Get validation state for each field
+  const emailValidation = validateField('email', formData.email)
+  const passwordValidation = validateField('password', formData.password)
+
   return (
-    // Centered signup form box
     <Box
       component="form"
       onSubmit={handleSignup}
       sx={{ maxWidth: 400, minWidth: 400, mx: 'auto', mt: 6, textAlign: 'center' }}
     >
-      {/* Form heading */}
       <Typography variant="h5" gutterBottom>Sign Up</Typography>
 
-      {/* Email input field */}
       <TextField
         fullWidth
         label="Email"
         margin="normal"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        value={formData.email}
+        onChange={handleFieldChange('email')}
+        onBlur={handleFieldBlur('email')}
+        error={emailValidation.hasError}
+        helperText={emailValidation.helperText}
+        required
       />
 
-      {/* Password input field */}
       <TextField
         fullWidth
         label="Password"
         type="password"
         margin="normal"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        value={formData.password}
+        onChange={handleFieldChange('password')}
+        onBlur={handleFieldBlur('password')}
+        error={passwordValidation.hasError}
+        helperText={passwordValidation.helperText}
+        required
       />
 
-      {/* Error and success message displays */}
-      {error && <Typography color="error" sx={{ mt: 1 }}>{error}</Typography>}
-      {success && <Typography color="primary" sx={{ mt: 1 }}>{success}</Typography>}
+      {serverError && (
+        <Typography color="error" sx={{ mt: 1, textAlign: 'left' }}>
+          {serverError}
+        </Typography>
+      )}
+      
+      {success && (
+        <Typography color="primary" sx={{ mt: 1, textAlign: 'left' }}>
+          {success}
+        </Typography>
+      )}
 
-      {/* Submit button */}
       <Button
         type="submit"
         fullWidth
+        variant="contained"
         sx={{ mt: 2 }}
         disabled={isSubmitting}
       >
-        Sign Up
+        {isSubmitting ? 'Signing Up...' : 'Sign Up'}
       </Button>
 
-      {/* Back to login button */}
       <Button variant="text" fullWidth sx={{ mt: 1 }} onClick={onback}>
         Back to Login
       </Button>

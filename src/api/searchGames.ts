@@ -27,5 +27,5 @@ const res = await axios.get(`${import.meta.env.VITE_ENDPOINT}api/search`, {
 });
 
   // Return the data typed as a SearchResponse object
-  return res.data as SearchResponse;
+  return res.data as any;
 }

@@ -65,13 +65,14 @@ const GameSearch: React.FC = () => {
     const fetch = async () => {
       setLoading(true);
       try {
-        const data: SearchResponse = await searchGames(debouncedQuery, page, pageSize);
-        setResults(data.results);
-        setTotal(data.number_of_total_results);
+        debugger;
+        const data: any = await searchGames(debouncedQuery, page, pageSize);
+        setResults(data);
+        setTotal(data.length);
       } finally {
         setLoading(false);
       }
-    };
+    }
 
     fetch();
   }, [debouncedQuery, page]);

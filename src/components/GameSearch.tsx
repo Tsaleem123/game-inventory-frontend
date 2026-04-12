@@ -65,7 +65,6 @@ const GameSearch: React.FC = () => {
     const fetch = async () => {
       setLoading(true);
       try {
-        debugger;
         const data: any = await searchGames(debouncedQuery, page, pageSize);
         setResults(data);
         setTotal(data.length);
@@ -153,6 +152,7 @@ const GameSearch: React.FC = () => {
             <>
               {/* Game results list */}
               <List sx={{ mt: 2 }}>
+              
                 {results.map((game) => (
                   <GameListItem key={game.id} game={game} onAdd={handleAddGame} />
                 ))}
@@ -163,7 +163,7 @@ const GameSearch: React.FC = () => {
                 <Box mt={2} display="flex" justifyContent="center">
                   <Pager
                     page={page}
-                    pageCount={Math.ceil(total / pageSize)}
+                      pageCount={Math.ceil(total / pageSize)}
                     onChange={(_, p) => setPage(p)}
                   />
                 </Box>

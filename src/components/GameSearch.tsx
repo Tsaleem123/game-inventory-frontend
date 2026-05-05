@@ -65,9 +65,9 @@ const GameSearch: React.FC = () => {
     const fetch = async () => {
       setLoading(true);
       try {
-        const data: any = await searchGames(debouncedQuery, page, pageSize);
-        setResults(data);
-        setTotal(data.length);
+        const data = await searchGames(debouncedQuery, page, pageSize);
+        setResults(data.games);
+        setTotal(data.total);
       } finally {
         setLoading(false);
       }
@@ -153,9 +153,10 @@ const GameSearch: React.FC = () => {
               {/* Game results list */}
               <List sx={{ mt: 2 }}>
               
-                {results.map((game) => (
-                  <GameListItem key={game.id} game={game} onAdd={handleAddGame} />
-                ))}
+                {results.map((game) => {
+  debugger; // Browser/IDE will pause here each iteration
+  return <GameListItem key={game.id} game={game} onAdd={handleAddGame} />;
+})}
               </List>
 
               {/* Pagination component - only shown if there are results */}

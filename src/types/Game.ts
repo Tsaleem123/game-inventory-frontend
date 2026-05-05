@@ -1,11 +1,18 @@
-export interface Game {
-  id: number
-  name: string
-  image?: {
-    icon_url: string
-    medium_url: string
-    screen_url: string
-  }
-  description?: string
-  [key: string]: any // optional catch-all
-}
+export type Game = {
+  id: number;
+  name: string;
+  summary?: string;
+  cover?: { url: string };
+  rating?: number;
+  rating_count?: number;
+  aggregated_rating?: number;
+  aggregated_rating_count?: number;
+  screenshots?: { url: string }[];
+  genres?: { name: string }[];
+  platforms?: { name: string }[];
+  first_release_date?: number;  // Unix timestamp
+  involved_companies?: {
+    company: { name: string };
+    developer: boolean;
+  }[];
+};

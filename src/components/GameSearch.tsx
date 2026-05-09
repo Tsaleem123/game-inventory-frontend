@@ -135,7 +135,7 @@ const GameSearch: React.FC = () => {
               '&.Mui-focused fieldset': {
                 borderColor: '#1976d2'
               }
-            }
+              }
           }}
         />
       </Box>
@@ -152,9 +152,7 @@ const GameSearch: React.FC = () => {
             <>
               {/* Game results list */}
               <List sx={{ mt: 2 }}>
-              
                 {results.map((game) => {
-  debugger; // Browser/IDE will pause here each iteration
   return <GameListItem key={game.id} game={game} onAdd={handleAddGame} />;
 })}
               </List>

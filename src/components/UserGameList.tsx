@@ -219,7 +219,7 @@ const UserGameItem = ({
         {/* Game Image */}
         <Box
           component="img"
-          src={game?.image?.icon_url || '/placeholder.png'}
+          src={game?.cover?.url}
           alt={game?.name}
           sx={{
             width: { xs: 60, sm: 80 },

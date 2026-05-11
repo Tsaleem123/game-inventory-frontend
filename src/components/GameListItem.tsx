@@ -2,7 +2,7 @@
 import React from 'react';
 import {
   ListItem, ListItemAvatar, Avatar,
-  ListItemText, IconButton, Chip,
+   IconButton, Chip,
   Box, Typography, Tooltip
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -31,7 +31,6 @@ const GameListItem: React.FC<Props> = ({ game, onAdd }) => {
     : null;
   const developer = game.involved_companies
     ?.find(c => c.developer)?.company.name;
-  const firstScreenshot = game.screenshots?.[0];
 
   return (
     <ListItem

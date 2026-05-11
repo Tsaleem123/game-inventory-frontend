@@ -10,7 +10,6 @@ import Pager from './Pager';
 import { searchGames } from '../api/searchGames';
 import { addToUserList } from '../api/userGames';
 import type { Game } from '../types/Game';
-import type { SearchResponse } from '../api/searchGames';
 
 // Number of games to display per page
 const pageSize = 10;

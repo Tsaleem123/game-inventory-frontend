@@ -3,165 +3,193 @@ import {
   Box,
   CircularProgress,
   List,
-  TextField
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material/Select';
 import GameListItem from './GameListItem';
 import Pager from './Pager';
 import { searchGames } from '../api/searchGames';
 import { addToUserList } from '../api/userGames';
 import type { Game } from '../types/Game';
 
-// Number of games to display per page
 const pageSize = 10;
 
 /**
- * GameSearch component that provides a search interface for games
- * Features debounced search input, pagination, and the ability to add games to user's list
+ * Strips filler words ("game"/"games") from the query.
+ * All genre/theme/keyword resolution is handled entirely on the backend.
  */
+function cleanCategory(query: string): string {
+  return query.trim().replace(/\bgames?\b/gi, '').trim();
+}
+
+// Shared dark-theme styles for MUI inputs
+const darkInputSx = {
+  input: { color: 'white' },
+  label: { color: 'rgba(255, 255, 255, 0.7)' },
+  '& .MuiInputLabel-root.Mui-focused': { color: '#1976d2' },
+  '& .MuiOutlinedInput-root': {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    '& fieldset': { borderColor: 'rgba(255, 255, 255, 0.23)' },
+    '&:hover fieldset': { borderColor: 'rgba(255, 255, 255, 0.5)' },
+    '&.Mui-focused fieldset': { borderColor: '#1976d2' },
+  },
+};
+
+const darkSelectSx = {
+  ...darkInputSx,
+  '& .MuiSelect-icon': { color: 'rgba(255,255,255,0.7)' },
+  '& .MuiSelect-select': { color: 'white' },
+};
+
+const dropdownMenuProps = {
+  PaperProps: {
+    sx: {
+      backgroundColor: '#1e1e1e',
+      color: 'white',
+      '& .MuiMenuItem-root:hover': { backgroundColor: 'rgba(255,255,255,0.08)' },
+      '& .MuiMenuItem-root.Mui-selected': { backgroundColor: 'rgba(25,118,210,0.2)' },
+    },
+  },
+};
+
+type SearchMode = 'category' | 'name';
+
 const GameSearch: React.FC = () => {
-  // State for the current search query input
-  const [query, setQuery] = useState('');
+  const [mode, setMode]                = useState<SearchMode>('category');
+  const [query, setQuery]              = useState('');
+  const [debouncedQuery, setDebounced] = useState('');
+  const [page, setPage]                = useState(1);
+  const [results, setResults]          = useState<Game[]>([]);
+  const [total, setTotal]              = useState(0);
+  const [loading, setLoading]          = useState(false);
 
-  // State for the debounced search query (used for actual API calls)
-  const [debouncedQuery, setDebouncedQuery] = useState(query);
-
-  // State for the current page number
-  const [page, setPage] = useState(1);
-
-  // State for storing search results
-  const [results, setResults] = useState<Game[]>([]);
-
-  // State for storing total number of results (for pagination)
-  const [total, setTotal] = useState(0);
-
-  // State for loading indicator
-  const [loading, setLoading] = useState(false);
-
-  /**
-   * Effect for debouncing the search query
-   * Delays the API call by 500ms after user stops typing
-   */
+  // Debounce
   useEffect(() => {
-    const timeout = setTimeout(() => setDebouncedQuery(query), 500);
-    return () => clearTimeout(timeout);
+    const t = setTimeout(() => setDebounced(query), 500);
+    return () => clearTimeout(t);
   }, [query]);
 
-  /**
-   * Effect for performing the actual search API call
-   * Triggers when debounced query or page changes
-   */
   useEffect(() => {
-    // Don't search if query is too short
-    if (debouncedQuery.trim().length < 3) {
+    const trimmed = debouncedQuery.trim();
+
+    if (trimmed.length < 3) {
       setResults([]);
       setTotal(0);
       return;
     }
 
-    /**
-     * Async function to fetch search results from the API
-     */
-    const fetch = async () => {
+    const run = async () => {
       setLoading(true);
       try {
-        const data = await searchGames(debouncedQuery, page, pageSize);
-        setResults(data.games);
-        setTotal(data.total);
+        if (mode === 'name') {
+          const data = await searchGames(trimmed, page, pageSize);
+          setResults(data.games);
+          setTotal(data.total);
+        } else {
+          const category = cleanCategory(trimmed);
+          if (!category) { setResults([]); setTotal(0); return; }
+          const data = await searchGames('', page, pageSize, category);
+          setResults(data.games);
+          setTotal(data.total);
+        }
       } finally {
         setLoading(false);
       }
-    }
+    };
 
-    fetch();
-  }, [debouncedQuery, page]);
+    run();
+  }, [debouncedQuery, mode, page]);
 
-  /**
-   * Handles adding a game to the user's list
-   * Checks for authentication and calls the API to add the game
-   * @param game - The game object to add to the user's list
-   */
   const handleAddGame = async (game: Game) => {
-    // Check if user is authenticated
     const token = localStorage.getItem('token');
-    if (!token) {
-      alert('Please log in to add games to your list.');
-      return;
-    }
-
+    if (!token) { alert('Please log in to add games to your list.'); return; }
     try {
-      // Add game to user's list with default status and rating
       await addToUserList(token, game.id, 'to be played', 0);
       alert(`${game.name} added to your list!`);
     } catch {
-      // Handle errors (likely duplicate entries)
       alert('Failed to add game. It might already be in your list.');
     }
   };
 
+  const inputLabel = mode === 'category' ? 'Search by category' : 'Search by game name';
+  const placeholder = mode === 'category'
+    ? 'e.g. horror, racing, dance'
+    : 'e.g. Marvel Rivals, FIFA';
+
   return (
     <>
-      {/* Search input section */}
-      <Box display="flex" flexDirection="column" alignItems="center" mb={3}>
+      <Box
+        display="flex"
+        flexDirection={{ xs: 'column', sm: 'row' }}
+        alignItems={{ xs: 'stretch', sm: 'center' }}
+        justifyContent="center"
+        gap={2}
+        mb={3}
+      >
+        {/* Mode selector dropdown */}
+        <FormControl
+          size="small"
+          sx={{ minWidth: 180, ...darkSelectSx }}
+        >
+          <InputLabel>Search by</InputLabel>
+          <Select
+            label="Search by"
+            value={mode}
+            onChange={(e: SelectChangeEvent) => {
+              setMode(e.target.value as SearchMode);
+              setQuery('');
+              setPage(1);
+              setResults([]);
+              setTotal(0);
+            }}
+            MenuProps={dropdownMenuProps}
+          >
+            <MenuItem value="category">Category</MenuItem>
+            <MenuItem value="name">Name</MenuItem>
+          </Select>
+        </FormControl>
+
+        {/* Search input */}
         <TextField
-          label="Search games"
+          key={mode}
+          label={inputLabel}
+          placeholder={placeholder}
           variant="outlined"
           size="small"
           value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setPage(1);
-          }}
+          onChange={(e) => { setQuery(e.target.value); setPage(1); }}
           sx={{
-            width: {
-              sm: '75%',      
-              md: '60%',     
-              lg: '50%'      
-            },
-            // Rest of your styling
-            input: { color: 'white' },
-            label: { color: 'rgba(255, 255, 255, 0.7)' },
-            '& .MuiInputLabel-root.Mui-focused': {
-              color: '#1976d2'
-            },
-            '& .MuiOutlinedInput-root': {
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
-              '& fieldset': {
-                borderColor: 'rgba(255, 255, 255, 0.23)'
-              },
-              '&:hover fieldset': {
-                borderColor: 'rgba(255, 255, 255, 0.5)'
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#1976d2'
-              }
-              }
+            flex: 1,
+            maxWidth: { sm: '55%' },
+            ...darkInputSx,
           }}
         />
       </Box>
 
-      {/* Results section */}
+      {/* Results */}
       <Box display="flex" justifyContent="center">
         <Box sx={{ width: '100%', maxWidth: 800 }}>
-          {/* Loading indicator */}
           {loading ? (
             <Box display="flex" justifyContent="center" mt={4}>
               <CircularProgress />
             </Box>
           ) : (
             <>
-              {/* Game results list */}
               <List sx={{ mt: 2 }}>
-                {results.map((game) => {
-  return <GameListItem key={game.id} game={game} onAdd={handleAddGame} />;
-})}
+                {results.map((game) => (
+                  <GameListItem key={game.id} game={game} onAdd={handleAddGame} />
+                ))}
               </List>
 
-              {/* Pagination component - only shown if there are results */}
               {results.length > 0 && (
                 <Box mt={2} display="flex" justifyContent="center">
                   <Pager
                     page={page}
-                      pageCount={Math.ceil(total / pageSize)}
+                    pageCount={Math.ceil(total / pageSize)}
                     onChange={(_, p) => setPage(p)}
                   />
                 </Box>

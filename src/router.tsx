@@ -13,6 +13,7 @@ import Signup from './components/Signup';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import UserGameList from './components/UserGameList';
+import ExplorePage from './components/ExplorePage';
 
 // Root layout route
 const rootRoute = createRootRoute({
@@ -87,6 +88,13 @@ const appRoute = createRoute({
   component: () => <App />,
 });
 
+// Explore route (public — browsing doesn't require auth)
+const exploreRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/explore',
+  component: () => <ExplorePage />,
+});
+
 // Protected /my-games route
 const userGameRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -110,6 +118,7 @@ export const router = createRouter({
     forgotRoute,
     resetRoute,
     appRoute,
+    exploreRoute,
     userGameRoute,
   ]),
 });

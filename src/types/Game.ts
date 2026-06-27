@@ -7,6 +7,8 @@ export type Game = {
   rating_count?: number;
   aggregated_rating?: number;
   aggregated_rating_count?: number;
+  total_rating?: number;
+  total_rating_count?: number;
   screenshots?: { url: string }[];
   genres?: { name: string }[];
   platforms?: { name: string }[];

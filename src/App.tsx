@@ -59,6 +59,28 @@ const App: React.FC = () => {
           flexWrap: 'wrap', // Allow wrapping on very small screens
         }}
       >
+        {/* Navigate to the Explore page */}
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={() => { window.location.href = '/explore' }}
+          sx={{
+            borderColor: 'white',
+            color: 'white',
+            fontSize: { xs: '0.75rem', sm: '0.875rem' },
+            px: { xs: 1.5, sm: 2 },
+            py: { xs: 0.5, sm: 0.75 },
+            minWidth: 'fit-content',
+            whiteSpace: 'nowrap',
+            '&:hover': {
+              borderColor: 'rgba(255, 255, 255, 0.8)',
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            }
+          }}
+        >
+          Explore
+        </Button>
+
         {/* Navigate to user's game list */}
         <Button
           variant="outlined"

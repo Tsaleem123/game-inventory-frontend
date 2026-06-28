@@ -83,7 +83,7 @@ const UserGameList = () => {
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" mt={4}>
-        <CircularProgress />
+        <CircularProgress sx={{ color: '#a99fd0' }} />
       </Box>
     );
   }
@@ -106,7 +106,19 @@ const UserGameList = () => {
           variant="outlined"
           size="small"
           onClick={() => navigate({ to: '/app' })}
-          sx={{ borderColor: 'white' }}
+          sx={{
+            borderColor: 'white',
+            color: 'white',
+            fontSize: { xs: '0.75rem', sm: '0.875rem' },
+            px: { xs: 1.5, sm: 2 },
+            py: { xs: 0.5, sm: 0.75 },
+            minWidth: 'fit-content',
+            whiteSpace: 'nowrap',
+            '&:hover': {
+              borderColor: 'rgba(255, 255, 255, 0.8)',
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            },
+          }}
         >
           Back To Search
         </Button>

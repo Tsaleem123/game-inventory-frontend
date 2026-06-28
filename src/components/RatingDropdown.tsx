@@ -30,6 +30,8 @@ const RatingDropdown: React.FC<RatingDropdownProps> = ({ value, onChange, labelI
         value={value}
         onChange={(e) => onChange(Number(e.target.value))} // Convert string to number
         label="Rating"
+        // White dropdown arrow so it's visible against the dark background
+        sx={{ '& .MuiSelect-icon': { color: 'white' } }}
       >
         {/* Generate rating options from 1 to 10 */}
         {[...Array(10)].map((_, i) => (

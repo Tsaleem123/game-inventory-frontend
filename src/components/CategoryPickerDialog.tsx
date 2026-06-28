@@ -22,6 +22,16 @@ interface Props {
 /** Stable key for a category (type + id). */
 const keyOf = (c: Category) => `${c.type}-${c.id}`;
 
+/** White outlined button style matching the page's nav buttons. */
+const whiteOutlineSx = {
+  borderColor: 'white',
+  color: 'white',
+  '&:hover': {
+    borderColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+} as const;
+
 /**
  * Dialog that lets the user choose exactly which category carousels appear on
  * the Explore page. Selection is held in local temp state and only committed
@@ -67,10 +77,10 @@ const CategoryPickerDialog: React.FC<Props> = ({
                 variant={selected ? 'filled' : 'outlined'}
                 sx={{
                   color: 'white',
-                  bgcolor: selected ? '#1976d2' : 'transparent',
+                  bgcolor: selected ? '#645394' : 'transparent',
                   borderColor: 'rgba(255,255,255,0.3)',
                   '&:hover': {
-                    bgcolor: selected ? '#1565c0' : 'rgba(255,255,255,0.08)',
+                    bgcolor: selected ? '#544479' : 'rgba(255,255,255,0.08)',
                   },
                 }}
               />
@@ -98,12 +108,18 @@ const CategoryPickerDialog: React.FC<Props> = ({
           <Box display="flex" gap={0.5}>
             <Button
               size="small"
+              variant="outlined"
               onClick={() => setTemp(categories.map(keyOf))}
-              sx={{ color: '#90caf9' }}
+              sx={whiteOutlineSx}
             >
               Select all
             </Button>
-            <Button size="small" onClick={() => setTemp([])} sx={{ color: '#90caf9' }}>
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={() => setTemp([])}
+              sx={whiteOutlineSx}
+            >
               Clear
             </Button>
           </Box>
@@ -114,10 +130,10 @@ const CategoryPickerDialog: React.FC<Props> = ({
       </DialogContent>
 
       <DialogActions sx={{ px: 3, py: 2 }}>
-        <Button onClick={onClose} sx={{ color: 'rgba(255,255,255,0.7)' }}>
+        <Button onClick={onClose} variant="outlined" sx={whiteOutlineSx}>
           Cancel
         </Button>
-        <Button onClick={() => onApply(temp)} variant="contained">
+        <Button onClick={() => onApply(temp)} variant="outlined" sx={whiteOutlineSx}>
           Apply
         </Button>
       </DialogActions>

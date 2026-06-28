@@ -33,7 +33,9 @@ const StatusDropdown: React.FC<StatusDropdownProps> = ({ value, onChange }) => {
       value={value}
       onChange={(e) => onChange(e.target.value)} // Pass selected value to parent
       size="small" // Compact size variant
-      sx={{ mr: 1, minWidth: 140 }} // Styling: right margin and minimum width
+      // Styling: right margin, minimum width, and a white dropdown arrow so it's
+      // visible against the dark background
+      sx={{ mr: 1, minWidth: 140, '& .MuiSelect-icon': { color: 'white' } }}
     >
       {/* Render each status option as a MenuItem */}
       {statusOptions.map((option) => (

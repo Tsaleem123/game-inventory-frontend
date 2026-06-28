@@ -175,7 +175,7 @@ const GameSearch: React.FC = () => {
         <Box sx={{ width: '100%', maxWidth: 800 }}>
           {loading ? (
             <Box display="flex" justifyContent="center" mt={4}>
-              <CircularProgress />
+              <CircularProgress sx={{ color: '#a99fd0' }} />
             </Box>
           ) : (
             <>

@@ -7,11 +7,11 @@
 :root {
   color: #ffffff !important;
   background-color: #121012 !important;
-  font-family: 'Times New Roman', Times, serif;
+  font-family: 'Pliant', sans-serif;
   font-weight: 400;
   font-size: 16px;
   line-height: 1.5;
-  font-synthesis: none;
+  font-synthesis: weight style;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -20,7 +20,7 @@
 /* ========== Layout ========== */
 body {
   margin: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Pliant', sans-serif;
   background-color: #121012;
   color: white;
   min-width: 20rem;
@@ -126,6 +126,11 @@ label,
   background: #ffffff;
   color: #1D191D;
 }
+/* Form controls don't inherit font-family by default in browsers,
+   so force them to use Pliant like the rest of the site. */
+button, input, select, textarea, optgroup {
+    font-family: inherit;
+  }
 button {
     background-color: #1D191D !important;
   }

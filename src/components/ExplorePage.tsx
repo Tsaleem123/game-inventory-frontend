@@ -157,13 +157,13 @@ const ExplorePage: React.FC = () => {
         <Box
           display="flex"
           alignItems="center"
-          justifyContent="space-between"
+          justifyContent="flex-start"
           flexWrap="wrap"
-          gap={1.5}
+          gap={2}
           mb={3}
           px={0.5}
         >
-          <Typography variant="h4" sx={{ color: 'white', fontWeight: 800 }}>
+          <Typography variant="h4" sx={{ color: 'white', fontWeight: 800, m: 0 }}>
             Explore
           </Typography>
           <Button
@@ -171,7 +171,18 @@ const ExplorePage: React.FC = () => {
             startIcon={<TuneIcon />}
             onClick={() => setPickerOpen(true)}
             disabled={categoriesLoading || allCategories.length === 0}
-            sx={navBtnSx}
+            sx={{
+              ...navBtnSx,
+              mt: '0 !important',
+              alignSelf: 'center',
+              // Use the same full-white border while disabled/loading as when
+              // active, so the outline never changes (no light-to-bold animation
+              // when categories finish loading). Only the text/icon is dimmed.
+              '&.Mui-disabled': {
+                borderColor: 'white',
+                color: 'rgba(255, 255, 255, 0.5)',
+              },
+            }}
           >
             Select categories
           </Button>
@@ -190,7 +201,7 @@ const ExplorePage: React.FC = () => {
         {/* Chosen category carousels */}
         {categoriesLoading ? (
           <Box display="flex" justifyContent="center" mt={4}>
-            <CircularProgress size={28} />
+            <CircularProgress size={28} sx={{ color: '#a99fd0' }} />
           </Box>
         ) : selectedCategories.length === 0 ? (
           <Box textAlign="center" mt={6}>

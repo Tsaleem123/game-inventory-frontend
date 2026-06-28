@@ -77,7 +77,7 @@ const GameCarousel: React.FC<Props> = ({
 
       {loading ? (
         <Box display="flex" alignItems="center" justifyContent="center" sx={{ height: 220 }}>
-          <CircularProgress size={28} />
+          <CircularProgress size={28} sx={{ color: '#a99fd0' }} />
         </Box>
       ) : games.length === 0 ? (
         <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.5)', px: 0.5 }}>

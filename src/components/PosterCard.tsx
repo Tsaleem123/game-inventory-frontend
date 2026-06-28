@@ -87,20 +87,20 @@ const PosterCard: React.FC<Props> = ({ game, rank, onAdd }) => {
 
         {/* Rank badge for the Top 10 row */}
         {rank != null && (
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 4,
-              left: 6,
-              fontWeight: 800,
-              fontSize: 34,
-              lineHeight: 1,
-              color: 'white',
-              textShadow: '0 2px 6px rgba(0,0,0,0.9)',
-            }}
-          >
-            {rank}
-          </Box>
+    <Box
+  sx={{
+    position: 'absolute',
+    top: 4,
+    left: 6,
+    fontWeight: 800,
+    fontSize: 34,
+    lineHeight: 1,
+    color: "white",
+    WebkitTextStroke: '1px black', 
+  }}
+>
+  {rank}
+</Box>
         )}
 
         {/* Score chip */}

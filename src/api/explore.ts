@@ -49,15 +49,23 @@ export async function getCategories(
   return res.data;
 }
 
+/** NSFW categories hidden from the Explore page (IGDB theme 42 = "Erotic"). */
+const EXCLUDED_THEME_IDS = new Set([42]);
+const EXCLUDED_NAMES = new Set(['erotic']);
+
+const isAllowedCategory = (c: Category) =>
+  !EXCLUDED_NAMES.has(c.name.toLowerCase()) &&
+  !(c.type === 'theme' && EXCLUDED_THEME_IDS.has(c.id));
+
 /**
  * Fetches every available category (genres + themes) in one call.
- * Used to populate the category picker dialog.
+ * Used to populate the category picker dialog. NSFW categories are filtered out.
  */
 export async function getAllCategories(): Promise<Category[]> {
   const res = await axios.get<CategoriesResponse>(`${EXPLORE_BASE}/categories`, {
     params: { page: 1, pageSize: 100 },
   });
-  return res.data.categories ?? [];
+  return (res.data.categories ?? []).filter(isAllowedCategory);
 }
 
 /**

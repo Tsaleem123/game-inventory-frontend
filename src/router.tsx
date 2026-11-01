@@ -11,9 +11,10 @@ import App from './App';
 import LoginForm from './components/LoginForm';
 import Signup from './components/Signup';
 import ForgotPassword from './components/ForgotPassword';
-import ResetPassword from './components/ResetPassword';
+import ResetPassword, { ResetLinkInvalid } from './components/ResetPassword';
 import UserGameList from './components/UserGameList';
 import ExplorePage from './components/ExplorePage';
+import { getToken } from './auth/session';
 
 // Root layout route
 const rootRoute = createRootRoute({
@@ -25,7 +26,7 @@ const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
   component: () => {
-    const token = localStorage.getItem('token');
+    const token = getToken();
     if (token) {
       window.location.href = '/app';
       return null;
@@ -69,7 +70,9 @@ const resetRoute = createRoute({
     const email = params.get('email') || '';
     const token = params.get('token') || '';
 
-    if (!email || !token) return <div>Invalid reset link</div>;
+    // The backend sends expired / already-used links here with ?expired=1
+    if (params.get('expired')) return <ResetLinkInvalid expired />;
+    if (!email || !token) return <ResetLinkInvalid />;
 
     return (
       <ResetPassword
@@ -100,7 +103,7 @@ const userGameRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/my-games',
   component: () => {
-    const token = localStorage.getItem('token');
+    const token = getToken();
     if (!token) {
       window.location.href = '/';
       return null;

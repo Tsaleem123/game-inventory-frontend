@@ -70,7 +70,8 @@ const ResetPassword: React.FC<Props> = ({ email, token, onDone }) => {
       setTimeout(onDone, 2000);
     } catch (err: any) {
       // Handle API errors and display appropriate error message
-      setError(err.response?.data?.message || 'Reset failed. Try again.');
+      const data = err.response?.data;
+      setError(data?.message || data?.errors?.join(' ') || 'Reset failed. Try again.');
     }
   };
 
@@ -150,3 +151,26 @@ const ResetPassword: React.FC<Props> = ({ email, token, onDone }) => {
 };
 
 export default ResetPassword;
+
+/**
+ * Shown instead of the reset form when the link is missing parts, has expired,
+ * or was already used. Offers a one-click way to request a fresh link.
+ */
+export const ResetLinkInvalid: React.FC<{ expired?: boolean }> = ({ expired }) => (
+  <Box sx={{ maxWidth: { xs: '90%', sm: 400, md: 500 }, mx: 'auto', mt: 6, textAlign: 'center', px: { xs: 2, sm: 0 } }}>
+    <Typography variant="h5" gutterBottom>
+      {expired ? 'This reset link has expired' : 'Invalid reset link'}
+    </Typography>
+    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)', mb: 3 }}>
+      {expired
+        ? 'Password reset links only work for a limited time and can only be used once. Request a new one below.'
+        : 'This link is incomplete. Request a new password reset link below.'}
+    </Typography>
+    <Button variant="contained" fullWidth onClick={() => { window.location.href = '/forgot-password'; }}>
+      Send me a new link
+    </Button>
+    <Button fullWidth sx={{ mt: 1 }} onClick={() => { window.location.href = '/'; }}>
+      Back to login
+    </Button>
+  </Box>
+);

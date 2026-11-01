@@ -12,6 +12,7 @@ import type { Game } from '../types/Game';
 import { useNavigate } from '@tanstack/react-router';
 import RatingDropdown from './RatingDropdown';
 import StatusDropdown from './StatusDropdown';
+import { getToken } from '../auth/session';
 
 interface UserGameEntry {
   gameId: number;
@@ -23,12 +24,13 @@ const UserGameList = () => {
   const [games, setGames] = useState<UserGameEntry[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
-  const token = localStorage.getItem('token');
+  const token = getToken();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!token) {
-      alert('Please log in to view your saved games.');
+      // No valid session (missing or expired): go to the login page.
+      navigate({ to: '/' });
       return;
     }
 

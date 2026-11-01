@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Container, Button, Box } from '@mui/material'
 import GameSearch from './components/GameSearch'
+import { getToken, clearToken } from './auth/session'
 
 /**
  * Main App component that serves as the primary game search page
@@ -10,14 +11,14 @@ const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
 
   useEffect(() => {
-    setIsLoggedIn(Boolean(localStorage.getItem('token')))
+    setIsLoggedIn(Boolean(getToken()))
   }, [])
 
   /**
    * Handles user logout by removing authentication token and redirecting to home
    */
   const handleLogout = () => {
-    localStorage.removeItem('token')
+    clearToken()
     setIsLoggedIn(false)
     window.location.href = '/'
   }
@@ -34,7 +35,7 @@ const App: React.FC = () => {
    * Checks authentication before allowing access
    */
   const handleViewGamesClick = () => {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     if (!token) {
       alert('Please log in to view your saved games.')
     } else {

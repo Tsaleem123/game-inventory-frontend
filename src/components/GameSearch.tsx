@@ -15,6 +15,7 @@ import Pager from './Pager';
 import { searchGames } from '../api/searchGames';
 import { addToUserList } from '../api/userGames';
 import type { Game } from '../types/Game';
+import { getToken } from '../auth/session';
 
 const pageSize = 10;
 
@@ -105,7 +106,7 @@ const GameSearch: React.FC = () => {
   }, [debouncedQuery, mode, page]);
 
   const handleAddGame = async (game: Game) => {
-    const token = localStorage.getItem('token');
+    const token = getToken();
     if (!token) { alert('Please log in to add games to your list.'); return; }
     try {
       await addToUserList(token, game.id, 'to be played', 0);

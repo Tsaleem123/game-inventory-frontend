@@ -1,5 +1,21 @@
+import { handleSessionExpired } from '../auth/session';
+
 // Base URL for all game-related API endpoints
 const BASE_URL = `${import.meta.env.VITE_ENDPOINT}api/games`;
+
+/**
+ * fetch() for authenticated endpoints. A 401 means the login token was
+ * rejected (usually expired), so the session is cleared and the user is sent
+ * back to the login page instead of the UI silently failing.
+ */
+async function authFetch(input: string, init: RequestInit): Promise<Response> {
+  const res = await fetch(input, init);
+  if (res.status === 401) {
+    handleSessionExpired();
+    throw new Error('Session expired');
+  }
+  return res;
+}
 
 /**
  * Adds a game to the user's personal game list
@@ -11,7 +27,7 @@ const BASE_URL = `${import.meta.env.VITE_ENDPOINT}api/games`;
  * @throws Error if the request fails
  */
 export const addToUserList = async (token: string, gameId: number, status: string, rating: number) => {
-  const res = await fetch(`${BASE_URL}/list`, {
+  const res = await authFetch(`${BASE_URL}/list`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -31,7 +47,7 @@ export const addToUserList = async (token: string, gameId: number, status: strin
  * @throws Error if the request fails or user is not authenticated
  */
 export const fetchUserGameList = async (token: string) => {
-  const res = await fetch(`${BASE_URL}/list`, {
+  const res = await authFetch(`${BASE_URL}/list`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   
@@ -47,7 +63,7 @@ export const fetchUserGameList = async (token: string) => {
  * @throws Error if the request fails or game is not found
  */
 export const removeFromUserList = async (token: string, gameId: number) => {
-  const res = await fetch(`${BASE_URL}/list/${gameId}`, {
+  const res = await authFetch(`${BASE_URL}/list/${gameId}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -68,7 +84,7 @@ export const updateGameRating = async (
   gameId: number,
   rating: number
 ): Promise<void> => {
-  const response = await fetch(`${BASE_URL}/usergames/${gameId}/rating`, {
+  const response = await authFetch(`${BASE_URL}/usergames/${gameId}/rating`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -95,7 +111,7 @@ export const updateGameStatus = async (
   gameId: number,
   status: string
 ): Promise<void> => {
-  const response = await fetch(`${BASE_URL}/usergames/${gameId}/status`, {
+  const response = await authFetch(`${BASE_URL}/usergames/${gameId}/status`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

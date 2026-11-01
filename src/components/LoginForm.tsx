@@ -6,6 +6,7 @@ import {
   Box
 } from '@mui/material';
 import { useNavigate } from '@tanstack/react-router';
+import { consumeSessionExpiredFlag } from '../auth/session';
 
 // Props interface for the LoginForm component
 interface Props {
@@ -19,6 +20,9 @@ const LoginForm: React.FC<Props> = ({ onLoginSuccess, onLoginAttempt }) => {
   
   // Error state to display authentication or network errors
   const [error, setError] = useState('');
+
+  // Shown when the user was sent here because their login session expired.
+  const [sessionExpired] = useState<boolean>(() => consumeSessionExpiredFlag());
   
   // TanStack Router hook for programmatic navigation
   const navigate = useNavigate();
@@ -108,6 +112,13 @@ const LoginForm: React.FC<Props> = ({ onLoginSuccess, onLoginAttempt }) => {
       <Typography variant="h5" gutterBottom>
         Login
       </Typography>
+
+      {/* Explains why the user is back at the login page */}
+      {sessionExpired && (
+        <Typography sx={{ mt: 1, color: '#90caf9' }}>
+          Your session expired. Please log in again.
+        </Typography>
+      )}
 
       {/* Email input field */}
       <TextField

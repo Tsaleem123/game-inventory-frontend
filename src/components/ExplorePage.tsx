@@ -14,6 +14,7 @@ import CategoryPickerDialog from './CategoryPickerDialog';
 import { getPopularGames, getAllCategories, type Category } from '../api/explore';
 import { addToUserList } from '../api/userGames';
 import type { Game } from '../types/Game';
+import { getToken, clearToken } from '../auth/session';
 
 /** How many categories are shown by default before the user customizes them. */
 const DEFAULT_VISIBLE = 8;
@@ -40,7 +41,7 @@ const ExplorePage: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    setIsLoggedIn(Boolean(localStorage.getItem('token')));
+    setIsLoggedIn(Boolean(getToken()));
   }, []);
 
   // Load the featured Top 10.
@@ -87,7 +88,7 @@ const ExplorePage: React.FC = () => {
   );
 
   const handleAdd = async (game: Game) => {
-    const token = localStorage.getItem('token');
+    const token = getToken();
     if (!token) {
       alert('Please log in to add games to your list.');
       return;
@@ -124,7 +125,7 @@ const ExplorePage: React.FC = () => {
           variant="outlined"
           size="small"
           onClick={() => {
-            if (!localStorage.getItem('token')) {
+            if (!getToken()) {
               alert('Please log in to view your saved games.');
             } else {
               navigate({ to: '/my-games' });
@@ -139,7 +140,7 @@ const ExplorePage: React.FC = () => {
           size="small"
           onClick={() => {
             if (isLoggedIn) {
-              localStorage.removeItem('token');
+              clearToken();
               setIsLoggedIn(false);
               navigate({ to: '/' });
             } else {

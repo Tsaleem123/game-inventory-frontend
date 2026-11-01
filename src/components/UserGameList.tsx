@@ -12,6 +12,7 @@ import type { Game } from '../types/Game';
 import { useNavigate } from '@tanstack/react-router';
 import RatingDropdown from './RatingDropdown';
 import StatusDropdown from './StatusDropdown';
+import Pager from './Pager';
 import { getToken } from '../auth/session';
 
 interface UserGameEntry {
@@ -20,10 +21,14 @@ interface UserGameEntry {
   rating: number | null;
 }
 
+/** How many games are shown per page of "My Game List". */
+const PAGE_SIZE = 10;
+
 const UserGameList = () => {
   const [games, setGames] = useState<UserGameEntry[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
   const token = getToken();
   const navigate = useNavigate();
 
@@ -51,7 +56,26 @@ const UserGameList = () => {
   const handleRemove = async (gameId: number) => {
     if (!token) return;
     await removeFromUserList(token, gameId);
-    setGames(games.filter((g) => g.gameId !== gameId));
+    setGames((prev) => prev.filter((g) => g.gameId !== gameId));
+  };
+
+  // ----- Pagination -----
+  // Only the current page's games are rendered, so only those cards fetch
+  // their details (cover, name) from the API instead of the whole list at once.
+  const pageCount = Math.max(1, Math.ceil(games.length / PAGE_SIZE));
+
+  // If removing a game empties the last page, step back to the new last page.
+  useEffect(() => {
+    if (page > pageCount) setPage(pageCount);
+  }, [page, pageCount]);
+
+  const currentPage = Math.min(page, pageCount);
+  const firstIndex = (currentPage - 1) * PAGE_SIZE;
+  const pageGames = games.slice(firstIndex, firstIndex + PAGE_SIZE);
+
+  const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleRatingChange = async (gameId: number, newRating: number) => {
@@ -138,8 +162,20 @@ const UserGameList = () => {
         </Typography>
       )}
       
+      {!error && games.length === 0 && (
+        <Typography sx={{ color: 'rgba(255,255,255,0.7)' }}>
+          Your list is empty. Search for games and add them to see them here.
+        </Typography>
+      )}
+
+      {games.length > 0 && (
+        <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)', mb: 2 }}>
+          Showing {firstIndex + 1}–{firstIndex + pageGames.length} of {games.length} games
+        </Typography>
+      )}
+
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {games.map((entry) => (
+        {pageGames.map((entry) => (
           <UserGameItem
             key={entry.gameId}
             entry={entry}
@@ -148,6 +184,11 @@ const UserGameList = () => {
             onStatusChange={handleStatusChange}
           />
         ))}
+      </Box>
+
+      {/* Page controls (hidden automatically when everything fits on one page) */}
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+        <Pager page={currentPage} pageCount={pageCount} onChange={handlePageChange} />
       </Box>
     </Box>
     </>
